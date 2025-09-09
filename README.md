@@ -1,6 +1,8 @@
 # parquet-benchmark
 benchmark (geospatial) parquet files
 
+~60%-vibed :v:
+
 Development spec:
 
 This is a tool designed to benchmark and analyze parquet files. Initially, it should support querying local paths + paths from S3. Maybe Azure blob storage in the far future.
