@@ -1,5 +1,5 @@
 # For more information, please refer to https://aka.ms/vscode-docker-python
-FROM python:3-slim
+FROM python:3.11-slim
 
 # Install Java (using default available version) and ps command
 RUN apt-get update \
@@ -29,8 +29,10 @@ WORKDIR /app/src
 # Creates a non-root user with an explicit UID and adds permission to access the /app folder
 # For more info, please refer to https://aka.ms/vscode-docker-python-configure-containers
 RUN adduser -u 5678 --disabled-password --gecos "" appuser && chown -R appuser /app
+# Create output directory and ensure appuser owns it
+RUN mkdir -p /app/output && chown appuser:appuser /app/output
 USER appuser
 
 # During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug
-CMD ["python", "-m", "parquet_benchmark.entry"]
-ENTRYPOINT ["python", "-m", "parquet_benchmark.entry"]
+CMD ["python", "-m", "parquet_benchmark.benchmark"]
+ENTRYPOINT ["python", "-m", "parquet_benchmark.benchmark"]

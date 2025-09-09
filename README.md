@@ -36,3 +36,45 @@ Then we'll have a table with per-test-set information:
     - Average query time w/ bbox
     - Average query time w/ geometric filtering
     - Which query engine was used
+
+## S3 Output Strategy
+
+The benchmark now automatically uploads results to S3 with the following structure:
+
+```
+s3://your-bucket/your-path/ds=YYYYMMDD_HHMMSS/
+├── traffic.parquet          # Combined HTTP traffic logs from all queries
+└── [query_name]_gantt.html  # Gantt charts for queries with display_traffic enabled
+```
+
+### Usage
+
+```bash
+# Run benchmark with S3 output
+python benchmark.py \
+  --input s3://bucket/path/to/data/* \
+  --output s3://bucket/results/ \
+  --engines "duckdb,spark"
+
+# If bucket is not in the output path, specify it separately
+python benchmark.py \
+  --input s3://bucket/path/to/data/* \
+  --output results/parquet-benchmark/ \
+  --bucket my-bucket \
+  --engines "duckdb,spark"
+```
+
+### Traffic Data Schema
+
+The `traffic.parquet` file contains the following columns:
+- All original HTTP traffic columns (request_type, url, status_code, response_time_ms, etc.)
+- `query_name`: Name of the query and engine (e.g., "Tiny bbox_duckdb")
+- `query_index`: Unique index for each query execution
+- `bbox_min_lon`, `bbox_min_lat`, `bbox_max_lon`, `bbox_max_lat`: Bounding box coordinates
+
+### Authentication
+
+Ensure AWS credentials are available either through:
+- Environment variables (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN)
+- AWS credentials file (~/.aws/credentials)
+- IAM roles (when running on AWS)

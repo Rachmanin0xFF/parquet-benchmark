@@ -19,7 +19,7 @@
 				"docker-build"
 			],
 			"python": {
-				"file": "entry.py"
+				"file": "benchmark.py"
 			}
 		}
 	]
